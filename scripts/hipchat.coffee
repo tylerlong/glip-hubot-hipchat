@@ -3,7 +3,7 @@
 #
 # Commands:
 #   hubot list - List HipChat rooms.
-#   hubot send <ID> <Message> - send message to room #ID.
+#   hubot send <ID> <message> - send message to room #ID.
 
 Hipchatter = require('hipchatter')
 
@@ -20,4 +20,12 @@ module.exports = (robot) ->
         res.send "Uanble to list rooms: #{err}"
 
   robot.respond /send (\d+) (.+?)$/, (res) ->
-    res.send "Message \"#{match[2]}\" sent to Room ##{match[1]}"
+    hipchatter.send_room_message(
+      res.match[1]
+      res.match[2]
+      (err) ->
+        if err == null
+          res.send "Message \"#{res.match[2]}\" sent to Room ##{res.match[1]}"
+        else
+          res.send "Failed to send message: #{err}"
+    )
